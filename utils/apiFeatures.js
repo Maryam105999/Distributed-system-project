@@ -5,18 +5,14 @@ class APIFeatures {
   }
 
   filter() {
-    //   1A) Filtering
-    // Create a hardcopy from the queryString, queryString is the data we specify in the quesryString in the cause of filtering
     const queryObj = { ...this.queryString };
-    // Create an array of the fields we want to execlude before quering
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    // Loop over the excluded array and delete each of them from the queryObj
     excludedFields.forEach(el => delete queryObj[el]);
 
     // 1B) Advanced filtering
-    // Convert the obj to a string
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
@@ -26,10 +22,9 @@ class APIFeatures {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort('-createdAt');
     }
-    // else {
-    //   this.query = this.query.sort('-createdAt');
-    // }
 
     return this;
   }
@@ -55,5 +50,4 @@ class APIFeatures {
     return this;
   }
 }
-
 module.exports = APIFeatures;
